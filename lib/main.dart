@@ -16,13 +16,38 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class DetailMenuPage extends StatelessWidget {
+class DetailMenuPage extends StatefulWidget {
   const DetailMenuPage({super.key});
+
+  @override
+  State<DetailMenuPage> createState() => _DetailMenuPageState();
+}
+
+class _DetailMenuPageState extends State<DetailMenuPage> {
+  bool isFavorite = false;
+  int jumlahPesanan = 1;
+  String catatanPesanan = '';
+  final int hargaSatuan = 10000;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Menu')),
+      appBar: AppBar(
+        title: const Text('Detail Menu'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.grey,
+            ),
+            onPressed: () {
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +127,85 @@ class DetailMenuPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Tugas 5: tombol pesan
+                  // Fitur Jumlah Pesanan
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Jumlah Pesanan',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              if (jumlahPesanan > 1) {
+                                setState(() {
+                                  jumlahPesanan--;
+                                });
+                              }
+                            },
+                            icon: const Icon(Icons.remove_circle_outline),
+                            color: jumlahPesanan > 1
+                                ? const Color(0xFF8D6E63)
+                                : Colors.grey,
+                          ),
+                          Text(
+                            '$jumlahPesanan',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                jumlahPesanan++;
+                              });
+                            },
+                            icon: const Icon(Icons.add_circle_outline),
+                            color: const Color(0xFF8D6E63),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Fitur Catatan Pesanan
+                  const Text(
+                    'Catatan Pesanan',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    decoration: const InputDecoration(
+                      hintText: 'Tambah catatan pesanan...',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        catatanPesanan = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Catatan: $catatanPesanan',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Total Harga pada tombol Pesan
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -115,9 +218,9 @@ class DetailMenuPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
-                        'Pesan Sekarang',
-                        style: TextStyle(
+                      child: Text(
+                        'Pesan Sekarang - Rp ${hargaSatuan * jumlahPesanan}',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
